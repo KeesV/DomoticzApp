@@ -1,0 +1,56 @@
+﻿<Page
+    x:Class="AutoHome.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AutoHome"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:data="using:AutoHome"
+    mc:Ignorable="d" Loading="Page_Loading">
+
+    <Page.Resources>
+        <CollectionViewSource x:Name="SwitchesCVS" IsSourceGrouped="False" />
+
+        <DataTemplate x:Name="SwitchesListViewTemplate" x:DataType="data:LightSwitch">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="1"
+                           Text="{x:Bind Name}" 
+                           x:Phase="1"  
+                           Style="{ThemeResource BaseTextBlockStyle}"
+                           Margin="12,6,0,0"/>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <Pivot Title="AutoHome" Margin="0,0,0,0">
+            <PivotItem Header="Switches">
+                <Grid>
+                    <Button x:Name="btnRadio" Content="Radio luisteren" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="112,471,0,0" Click="btnRadio_Click"/>
+                    <Button x:Name="btnSwitch" Content="Go!" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="250,471,0,0" Click="btnSwitch_Click" />
+                    <ListView x:Name="lstSwitches" 
+                              HorizontalAlignment="Left" 
+                              Height="426" 
+                              VerticalAlignment="Top" 
+                              Width="326"
+                              ItemsSource="{x:Bind SwitchesCVS.View}"
+                              ItemTemplate="{StaticResource SwitchesListViewTemplate}">
+                    </ListView>
+                </Grid>
+            </PivotItem>
+            <PivotItem Header="Scenes">
+                <Grid/>
+            </PivotItem>
+        </Pivot>
+
+    </Grid>
+</Page>
