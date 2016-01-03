@@ -37,27 +37,6 @@ namespace AutoHome
             SwitchesCVS.Source = observableSwitches;
         }
 
-        private void PowerOff_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private async Task addToLog()
-        {
-            string command = string.Format("http://192.168.1.4:8080/json.htm?type=command&param=addlogmessage&message=HelloFromApp");
-
-            WebRequest wReq = WebRequest.Create(command);
-
-            WebResponse response = await wReq.GetResponseAsync();
-            
-        } 
-
-        private void btnRadio_Click(object sender, RoutedEventArgs e)
-        {
-            addToLog();
-
-        }
-
         private async Task<AvailableSwitchesResponse> getAvailableSwitchesAsync()
         {
             string UrlRequest = "http://192.168.1.4:8080/json.htm?type=command&param=getlightswitches";
@@ -124,7 +103,7 @@ namespace AutoHome
             }
         }
 
-        private async void btnSwitch_Click(object sender, RoutedEventArgs e)
+        private async void btnGo_Click(object sender, RoutedEventArgs e)
         {
             if(lstSwitches.SelectedItems.Count > 0)
             {
@@ -133,6 +112,11 @@ namespace AutoHome
 
             }
 
+        }
+
+        private void ShowHamburgerMenu(object sender, RoutedEventArgs e)
+        {
+            HamburgerMenu.HamburgerSplitView.IsPaneOpen = !HamburgerMenu.HamburgerSplitView.IsPaneOpen;
         }
     }
 

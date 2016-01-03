@@ -5,13 +5,12 @@
     xmlns:local="using:AutoHome"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:data="using:AutoHome"
     mc:Ignorable="d" Loading="Page_Loading">
 
     <Page.Resources>
         <CollectionViewSource x:Name="SwitchesCVS" IsSourceGrouped="False" />
 
-        <DataTemplate x:Name="SwitchesListViewTemplate" x:DataType="data:LightSwitch">
+        <DataTemplate x:Name="SwitchesListViewTemplate" x:DataType="local:LightSwitch">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -31,26 +30,33 @@
     </Page.Resources>
     
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <Pivot Title="AutoHome" Margin="0,0,0,0">
-            <PivotItem Header="Switches">
-                <Grid>
-                    <Button x:Name="btnRadio" Content="Radio luisteren" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="112,471,0,0" Click="btnRadio_Click"/>
-                    <Button x:Name="btnSwitch" Content="Go!" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="250,471,0,0" Click="btnSwitch_Click" />
-                    <ListView x:Name="lstSwitches" 
-                              HorizontalAlignment="Left" 
-                              Height="426" 
-                              VerticalAlignment="Top" 
-                              Width="326"
-                              ItemsSource="{x:Bind SwitchesCVS.View}"
-                              ItemTemplate="{StaticResource SwitchesListViewTemplate}">
-                    </ListView>
-                </Grid>
-            </PivotItem>
-            <PivotItem Header="Scenes">
-                <Grid/>
-            </PivotItem>
-        </Pivot>
+        <Button Style="{StaticResource SplitViewTogglePaneButtonStyle}"
+                    VerticalAlignment="Center"
+                    Click="ShowHamburgerMenu"/>
+        <TextBlock Text="AutoHome Switches" 
+                       VerticalAlignment="Center"
+                       Style="{ThemeResource TitleTextBlockStyle}" 
+                       Grid.Column="1"/>
+        <!--#endregion-->
+        <ListView x:Name="lstSwitches" 
+                  Grid.Row="1"
+                  Grid.ColumnSpan="2"
+                    ItemsSource="{x:Bind SwitchesCVS.View}"
+                    ItemTemplate="{StaticResource SwitchesListViewTemplate}">
+        </ListView>
+        <Button x:Name="btnGo" Content="Go!" Click="btnGo_Click" Grid.Row="2" Grid.Column="2"/>
+
+        <local:HamburgerMenu x:Name="HamburgerMenu" Grid.ColumnSpan="2" Grid.RowSpan="2" />
 
     </Grid>
 </Page>
