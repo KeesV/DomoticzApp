@@ -61,6 +61,21 @@
         <!--  #region content  -->
 
         <Pivot x:Name="MyPivot" Grid.Row="1">
+            <PivotItem DataContext="{Binding ConnectionPartViewModel}" Header="Connection">
+                <ScrollViewer Margin="0,12,-12,0" HorizontalContentAlignment="Left" VerticalScrollBarVisibility="Auto">
+                    <RelativePanel HorizontalAlignment="Left">
+                        <TextBox x:Name="txtDomoticzServer" Width="200" HorizontalAlignment="Left"
+                                 Header="Domoticz server"
+                                 Text="{Binding DomoticzServer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBox x:Name="txtDomoticzPort" Width="200" HorizontalAlignment="Left" Margin="0,12,0,0"
+                                 Header="Domoticz port"
+                                 Text="{Binding DomoticzPort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                 RelativePanel.Below="txtDomoticzServer"/>
+                        <Button x:Name="btnTestConnection" Margin="0,12,0,0" Content="Test connection"
+                                RelativePanel.Below="txtDomoticzPort"/>
+                    </RelativePanel>
+                </ScrollViewer>
+            </PivotItem>
             <PivotItem DataContext="{Binding SettingsPartViewModel}" Header="Settings">
                 <ScrollViewer Margin="0,12,-12,0" HorizontalContentAlignment="Left" VerticalScrollBarVisibility="Auto">
                     <RelativePanel HorizontalAlignment="Left">

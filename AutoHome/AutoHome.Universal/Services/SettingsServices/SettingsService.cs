@@ -53,6 +53,26 @@ namespace AutoHome.Universal.Services.SettingsServices
                 ApplyCacheMaxDuration(value);
             }
         }
+
+        public string DomoticzServer
+        {
+            get { return _helper.Read<string>(nameof(DomoticzServer), "192.168.1.4"); }
+            set
+            {
+                _helper.Write(nameof(DomoticzServer), value);
+                //Put anything else that needs to happen when the domoticz server is updated here
+            }
+        }
+
+        public int DomoticzPort
+        {
+            get { return _helper.Read<int>(nameof(DomoticzPort), 8080); }
+            set
+            {
+                _helper.Write(nameof(DomoticzPort), value);
+                //Put anything else that needs to happen when the domoticz port is updated here
+            }
+        }
     }
 }
 

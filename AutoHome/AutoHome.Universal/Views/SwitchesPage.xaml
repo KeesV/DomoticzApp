@@ -14,6 +14,28 @@
         <vm:SwitchesPageViewModel />
     </Page.DataContext>
 
+    <Page.Resources>
+        <CollectionViewSource x:Name="SwitchesCVS" IsSourceGrouped="False" />
+
+        <DataTemplate x:Name="SwitchesListViewTemplate" x:DataType="vm:LightSwitch">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="1"
+                           Text="{x:Bind Name}" 
+                           x:Phase="1"  
+                           Style="{ThemeResource BaseTextBlockStyle}"
+                           Margin="12,6,0,0"/>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
         <!--  #region default visual states  -->
@@ -68,30 +90,20 @@
 
         <!--  page content  -->
 
-        <StackPanel Grid.Row="1" VerticalAlignment="Top"
-                    Orientation="Horizontal" Padding="12,8,0,0">
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ListView x:Name="lstSwitches" 
+                  Grid.Row="0"
+                    ItemsSource="{x:Bind SwitchesCVS.View}"
+                    ItemTemplate="{StaticResource SwitchesListViewTemplate}">
+            </ListView>
+            <Button Content="Go!" Grid.Row="1" />
 
-            <controls:Resizer>
-                <TextBox Width="200" MinWidth="200"
-                         MinHeight="60" Margin="0"
-                         Header="Parameter to pass"
-                         Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         TextWrapping="Wrap">
-                    <Interactivity:Interaction.Behaviors>
-                        <Behaviors:TextBoxEnterKeyBehavior>
-                            <Core:CallMethodAction MethodName="GotoDetailsPage" TargetObject="{Binding}" />
-                        </Behaviors:TextBoxEnterKeyBehavior>
-                        <Core:EventTriggerBehavior>
-                            <Behaviors:FocusAction/>
-                        </Core:EventTriggerBehavior>
-                    </Interactivity:Interaction.Behaviors>
-                </TextBox>
-            </controls:Resizer>
+        </Grid> 
 
-            <Button Margin="12,0" VerticalAlignment="Bottom"
-                    Click="{x:Bind ViewModel.GotoDetailsPage}" Content="Submit" />
-
-        </StackPanel>
 
     </Grid>
 </Page>

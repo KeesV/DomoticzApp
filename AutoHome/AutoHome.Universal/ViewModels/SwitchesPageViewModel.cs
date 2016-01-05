@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Navigation;
 
@@ -44,6 +46,25 @@ namespace AutoHome.Universal.ViewModels
             NavigationService.Navigate(typeof(Views.SettingsPage), 2);
         }
 
+    }
+
+    [DataContract]
+    public class LightSwitch
+    {
+        [DataMember(Name = "IsDimmer")]
+        public Boolean IsDimmer { get; set; }
+
+        [DataMember(Name = "Name")]
+        public string Name { get; set; }
+
+        [DataMember(Name = "SubType")]
+        public string SubType { get; set; }
+
+        [DataMember(Name = "Type")]
+        public string Type { get; set; }
+
+        [DataMember(Name = "idx")]
+        public int idx { get; set; }
     }
 }
 
