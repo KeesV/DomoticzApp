@@ -1,7 +1,4 @@
 using System;
-using System.Net;
-using System.Runtime.Serialization.Json;
-using System.Threading.Tasks;
 using Windows.UI.Xaml;
 
 namespace AutoHome.Universal.ViewModels
@@ -16,11 +13,14 @@ namespace AutoHome.Universal.ViewModels
     public class ConnectionPartViewModel : Mvvm.ViewModelBase
     {
         Services.SettingsServices.SettingsService _settings;
+        Services.DomoticzConnectionServices.DomoticzConnection _domoticzConnection;
 
         public ConnectionPartViewModel()
         {
             if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled)
                 _settings = Services.SettingsServices.SettingsService.Instance;
+
+            _domoticzConnection = Services.DomoticzConnectionServices.DomoticzConnection.Instance;
         }
 
         public string DomoticzServer {
@@ -34,38 +34,25 @@ namespace AutoHome.Universal.ViewModels
             set { _settings.DomoticzPort = value; base.RaisePropertyChanged(); }
         }
 
-        public async Task TestConnection()
+        public void TestConnection()
         {
-            await TestDomoticzConnection();
-        }
-
-        private async Task TestDomoticzConnection()
-        {
-            string UrlRequest = "http://192.168.1.4:8080/json.htm?type=command&param=addlogmessage&message=HelloFromWindows10App";
-
             try
             {
-                HttpWebRequest request = WebRequest.Create(UrlRequest) as HttpWebRequest;
-
-                using (HttpWebResponse response = (await request.GetResponseAsync()) as HttpWebResponse)
-                {
-                    if (response.StatusCode != HttpStatusCode.OK)
-                    {
-                        throw new Exception(String.Format("Server error (HTTP {0}: {1}).",
-                            response.StatusCode,
-                            response.StatusDescription));
-                    }
-                    //DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(AvailableSwitchesResponse));
-                    //object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
-                    //AvailableSwitchesResponse jsonResponse = objResponse as AvailableSwitchesResponse;
-                    //return jsonResponse;
-                }
-            }
-            catch (Exception e)
+                _domoticzConnection.TestDomoticzConnection().Wait();
+                TestConnectionResult = "Connection successful!";
+            } catch
             {
-                throw;
+                TestConnectionResult = "Connection failed...";
             }
+            
+            
+        }
 
+        private string _testConnectionResult = string.Empty;
+        public string TestConnectionResult
+        {
+            get { return _testConnectionResult; }
+            set { _testConnectionResult = value;  base.RaisePropertyChanged(); }
         }
     }
 
