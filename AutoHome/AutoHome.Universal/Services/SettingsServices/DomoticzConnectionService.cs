@@ -1,7 +1,10 @@
-﻿using AutoHome.Universal.Services.SettingsServices;
+﻿using AutoHome.Universal.Models;
+using AutoHome.Universal.Services.SettingsServices;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace AutoHome.Universal.Services.DomoticzConnectionServices
@@ -23,41 +26,37 @@ namespace AutoHome.Universal.Services.DomoticzConnectionServices
             _settings = SettingsService.Instance;
         }
 
-        public async Task TestDomoticzConnectionOld()
+        private async Task<T> ExecuteDomoticzApiCallAsync<T>(string command)
         {
-            string UrlRequest = $"http://{_settings.DomoticzServer}:{_settings.DomoticzPort}/json.htm?type=command&param=addlogmessage&message=HelloFromWindows10App";
-
             try
             {
-                HttpWebRequest request = WebRequest.Create(UrlRequest) as HttpWebRequest;
-
-                using (HttpWebResponse response = (await request.GetResponseAsync()) as HttpWebResponse)
+                using (var client = new HttpClient())
                 {
-                    if (response.StatusCode != HttpStatusCode.OK)
-                    {
-                        throw new Exception(String.Format("Server error (HTTP {0}: {1}).",
-                            response.StatusCode,
-                            response.StatusDescription));
-                    } 
-                    //DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(AvailableSwitchesResponse));
-                    //object objResponse = jsonSerializer.ReadObject(response.GetResponseStream());
-                    //AvailableSwitchesResponse jsonResponse = objResponse as AvailableSwitchesResponse;
-                    //return jsonResponse;
+                    client.BaseAddress = new Uri($"http://{_settings.DomoticzServer}:{_settings.DomoticzPort}/");
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.Timeout = new TimeSpan(0, 0, 0, 10, 0);
+
+                    HttpResponseMessage response = await client.GetAsync(command, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode(); //throw exception if not succesfull
+
+                    //this will only be executed on succesfull response
+                    string responseContent = await response.Content.ReadAsStringAsync();
+
+                    T responseDeserialized = await JsonConvert.DeserializeObjectAsync<T>(responseContent).ConfigureAwait(false);
+                    return responseDeserialized;
                 }
             }
-            catch (Exception e)
+            catch (HttpRequestException)
             {
                 throw;
             }
-
         }
 
-        public async Task TestDomoticzConnection()
+        public async Task<TestDomoticzResponse> TestDomoticzConnection()
         {
-            using (var client = new HttpClient())
-            {
-
-            }
+            TestDomoticzResponse response = await ExecuteDomoticzApiCallAsync<TestDomoticzResponse>("json.htm?type=command&param=addlogmessage&message=Hello from AutoHome").ConfigureAwait(false);
+            return response;
         }
     }
 }
