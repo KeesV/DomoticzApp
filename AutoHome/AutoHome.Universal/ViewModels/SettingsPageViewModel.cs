@@ -34,15 +34,16 @@ namespace AutoHome.Universal.ViewModels
             set { _settings.DomoticzPort = value; base.RaisePropertyChanged(); }
         }
 
-        public void TestConnection()
+        public async void TestConnection(object sender, object parameter)
         {
             try
             {
-                _domoticzConnection.TestDomoticzConnection().Wait();
+                TestConnectionResult = "Testing...";
+                await _domoticzConnection.TestDomoticzConnection();
                 TestConnectionResult = "Connection successful!";
             } catch
             {
-                TestConnectionResult = "Connection failed...";
+                TestConnectionResult = "Connection failed!";
             }
             
             
