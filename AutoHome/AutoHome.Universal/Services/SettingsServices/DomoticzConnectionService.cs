@@ -43,7 +43,7 @@ namespace AutoHome.Universal.Services.DomoticzConnectionServices
                     //this will only be executed on succesfull response
                     string responseContent = await response.Content.ReadAsStringAsync();
 
-                    T responseDeserialized = await JsonConvert.DeserializeObjectAsync<T>(responseContent).ConfigureAwait(false);
+                    T responseDeserialized = JsonConvert.DeserializeObject<T>(responseContent);
                     return responseDeserialized;
                 }
             }
@@ -55,7 +55,15 @@ namespace AutoHome.Universal.Services.DomoticzConnectionServices
 
         public async Task<TestDomoticzResponse> TestDomoticzConnection()
         {
-            TestDomoticzResponse response = await ExecuteDomoticzApiCallAsync<TestDomoticzResponse>("json.htm?type=command&param=addlogmessage&message=Hello from AutoHome").ConfigureAwait(false);
+            TestDomoticzResponse response = await ExecuteDomoticzApiCallAsync<TestDomoticzResponse>(
+                "json.htm?type=command&param=addlogmessage&message=Hello from AutoHome").ConfigureAwait(false);
+            return response;
+        }
+
+        public async Task<DomoticzGetAllSwitchesResponse> GetAllSwitches()
+        {
+            DomoticzGetAllSwitchesResponse response = await ExecuteDomoticzApiCallAsync<DomoticzGetAllSwitchesResponse>(
+                "json.htm?type=command&param=getlightswitches").ConfigureAwait(false);
             return response;
         }
     }

@@ -47,7 +47,7 @@ namespace AutoHome.Universal
             await Task.Delay(0);
 
             // navigate to first page
-            NavigationService.Navigate(typeof(Views.SwitchesPage));
+            NavigationService.Navigate(typeof(Views.MainPage));
         }
     }
 }

@@ -101,6 +101,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\BaseDomoticzResponse.cs" />
+    <Compile Include="Models\DomoticzGetAllSwitchesResponse.cs" />
+    <Compile Include="Models\DomoticzLightSwitch.cs" />
     <Compile Include="Models\TestDomoticzResponse.cs" />
     <Compile Include="Mvvm\ViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

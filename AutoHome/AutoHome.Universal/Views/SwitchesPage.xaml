@@ -8,16 +8,16 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="using:AutoHome.Universal.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      xmlns:vm="using:AutoHome.Universal.ViewModels" mc:Ignorable="d">
+      xmlns:vm="using:AutoHome.Universal.ViewModels"
+      xmlns:model="using:AutoHome.Universal.Models"
+      mc:Ignorable="d">
 
     <Page.DataContext>
         <vm:SwitchesPageViewModel />
     </Page.DataContext>
 
     <Page.Resources>
-        <CollectionViewSource x:Name="SwitchesCVS" IsSourceGrouped="False" />
-
-        <DataTemplate x:Name="SwitchesListViewTemplate" x:DataType="vm:LightSwitch">
+        <DataTemplate x:Name="SwitchesListViewTemplate" x:DataType="model:DomoticzLightSwitch">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -82,10 +82,6 @@
             <Interactivity:Interaction.Behaviors>
                 <Behaviors:EllipsisBehavior Visibility="Auto" />
             </Interactivity:Interaction.Behaviors>
-            <controls:PageHeader.SecondaryCommands>
-                <AppBarButton Click="{x:Bind ViewModel.GotoPrivacy}" Label="Privacy" />
-                <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="About" />
-            </controls:PageHeader.SecondaryCommands>
         </controls:PageHeader>
 
         <!--  page content  -->
@@ -97,10 +93,18 @@
             </Grid.RowDefinitions>
             <ListView x:Name="lstSwitches" 
                   Grid.Row="0"
-                    ItemsSource="{x:Bind SwitchesCVS.View}"
+                      Margin="12"
+                    ItemsSource="{Binding observableSwitches}"
                     ItemTemplate="{StaticResource SwitchesListViewTemplate}">
             </ListView>
-            <Button Content="Go!" Grid.Row="1" />
+            <Button Content="Go!" Grid.Row="1" Margin="12"/>
+            <Button Content="Load switches" Grid.Row="1" Margin="200,12,12,12">
+                <Interactivity:Interaction.Behaviors>
+                    <Core:EventTriggerBehavior EventName="Click">
+                        <Core:CallMethodAction MethodName="LoadSwitches" TargetObject="{Binding Mode=OneWay}" />
+                    </Core:EventTriggerBehavior>
+                </Interactivity:Interaction.Behaviors>
+            </Button>
 
         </Grid> 
 

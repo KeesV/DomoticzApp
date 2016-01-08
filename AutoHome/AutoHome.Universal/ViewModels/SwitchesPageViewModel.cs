@@ -1,5 +1,7 @@
+using AutoHome.Universal.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Navigation;
@@ -8,63 +10,45 @@ namespace AutoHome.Universal.ViewModels
 {
     public class SwitchesPageViewModel : Mvvm.ViewModelBase
     {
+        Services.SettingsServices.SettingsService _settings;
+        Services.DomoticzConnectionServices.DomoticzConnection _domoticzConnection;
+
+        //public ObservableCollection<DomoticzLightSwitch> observableSwitches = new ObservableCollection<DomoticzLightSwitch>();
+
         public SwitchesPageViewModel()
         {
             if (Windows.ApplicationModel.DesignMode.DesignModeEnabled)
-                Value = "Designtime value";
+                _settings = Services.SettingsServices.SettingsService.Instance;
+
+            _domoticzConnection = Services.DomoticzConnectionServices.DomoticzConnection.Instance;
+            observableSwitches = new ObservableCollection<DomoticzLightSwitch>();
+            
+
         }
 
-        string _Value = string.Empty;
-        public string Value { get { return _Value; } set { Set(ref _Value, value); } }
-
-        public override void OnNavigatedTo(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        private ObservableCollection<DomoticzLightSwitch> _observableSwitches;
+        public ObservableCollection<DomoticzLightSwitch> observableSwitches
         {
-            if (state.ContainsKey(nameof(Value)))
-                Value = state[nameof(Value)]?.ToString();
-            state.Clear();
+            get { return _observableSwitches; }
+            set { _observableSwitches = value; base.RaisePropertyChanged(); }
         }
 
-        public override async Task OnNavigatedFromAsync(IDictionary<string, object> state, bool suspending)
+        public async void LoadSwitches(object sender, object parameter)
         {
-            if (suspending)
-                state[nameof(Value)] = Value;
-            await Task.Yield();
+            try
+            {
+                DomoticzGetAllSwitchesResponse  response = await _domoticzConnection.GetAllSwitches();
+                foreach (DomoticzLightSwitch s in response.LightSwitches)
+                {
+                    observableSwitches.Add(s);
+                }
+            }
+            catch
+            {
+                //TODO: error handling
+            }
         }
 
-        public void GotoDetailsPage()
-        {
-            NavigationService.Navigate(typeof(Views.DetailPage), Value);
-        }
-
-        public void GotoPrivacy()
-        {
-            NavigationService.Navigate(typeof(Views.SettingsPage), 1);
-        }
-
-        public void GotoAbout()
-        {
-            NavigationService.Navigate(typeof(Views.SettingsPage), 2);
-        }
-
-    }
-
-    [DataContract]
-    public class LightSwitch
-    {
-        [DataMember(Name = "IsDimmer")]
-        public Boolean IsDimmer { get; set; }
-
-        [DataMember(Name = "Name")]
-        public string Name { get; set; }
-
-        [DataMember(Name = "SubType")]
-        public string SubType { get; set; }
-
-        [DataMember(Name = "Type")]
-        public string Type { get; set; }
-
-        [DataMember(Name = "idx")]
-        public int idx { get; set; }
     }
 }
 
