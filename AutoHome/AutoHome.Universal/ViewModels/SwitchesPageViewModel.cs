@@ -35,11 +35,14 @@ namespace AutoHome.Universal.ViewModels
 
         public async void LoadSwitches(object sender, object parameter)
         {
+            observableSwitches.Clear();
             try
             {
                 DomoticzGetAllSwitchesResponse  response = await _domoticzConnection.GetAllSwitches();
                 foreach (DomoticzLightSwitch s in response.LightSwitches)
                 {
+                    DomoticzGetDeviceResponse r = await _domoticzConnection.GetDevice(s.idx);
+                    s.Name += $" ({r.Result[0].Status})";
                     observableSwitches.Add(s);
                 }
             }

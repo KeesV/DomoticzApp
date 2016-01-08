@@ -66,5 +66,12 @@ namespace AutoHome.Universal.Services.DomoticzConnectionServices
                 "json.htm?type=command&param=getlightswitches").ConfigureAwait(false);
             return response;
         }
+
+        public async Task<DomoticzGetDeviceResponse> GetDevice(int idx)
+        {
+            DomoticzGetDeviceResponse response = await ExecuteDomoticzApiCallAsync<DomoticzGetDeviceResponse>(
+                $"json.htm?type=devices&rid={idx}").ConfigureAwait(false);
+            return response;
+        }
     }
 }
