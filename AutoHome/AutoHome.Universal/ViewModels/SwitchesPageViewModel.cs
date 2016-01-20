@@ -63,10 +63,8 @@ namespace AutoHome.Universal.ViewModels
         {
             var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
             var item = arg.ClickedItem as Switch;
-            observableSwitches[observableSwitches.IndexOf(item)].Status = !item.Status;
-
-            //await new MessageDialog(item.Name).ShowAsync();
-        }
+            item.Status = !item.Status;
+         }
 
     }
 
