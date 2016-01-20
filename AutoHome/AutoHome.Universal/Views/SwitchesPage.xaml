@@ -9,7 +9,6 @@
       xmlns:local="using:AutoHome.Universal.Views"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:vm="using:AutoHome.Universal.ViewModels"
-      xmlns:model="using:AutoHome.Universal.Models"
       mc:Ignorable="d">
 
     <Page.DataContext>
@@ -17,21 +16,40 @@
     </Page.DataContext>
 
     <Page.Resources>
-        <DataTemplate x:Name="SwitchesListViewTemplate" x:DataType="model:DomoticzLightSwitch">
-            <Grid>
+        <DataTemplate x:Name="SwitchesGridViewTemplate" x:DataType="vm:Switch">
+            <Grid Padding="12">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="150"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="1"
-                           Text="{x:Bind Name}" 
-                           x:Phase="1"  
+                <TextBlock Grid.Column="0"
+                           Grid.Row="0"
+                           Grid.ColumnSpan="2"
                            Style="{ThemeResource BaseTextBlockStyle}"
-                           Margin="12,6,0,0"/>
+                           Text="{x:Bind Name}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                           />
+                <Image x:Name="imgIcon" Grid.Column="0"
+                       Grid.Row="1"
+                       Grid.RowSpan="2"
+                       Stretch="Fill" 
+                       Height="35" 
+                       Width="35" 
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Center" 
+                       Source="{x:Bind IconImage, Mode=OneWay}"
+                       />
+
+                <TextBlock Grid.Column="1"
+                           Grid.Row="1"
+                           Style="{ThemeResource BodyTextBlockStyle}"
+                           Text="Additional info..."
+                           Margin="5"></TextBlock>
+                
+
             </Grid>
         </DataTemplate>
     </Page.Resources>
@@ -91,12 +109,20 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ListView x:Name="lstSwitches" 
+            <GridView x:Name="grdSwitches" 
                   Grid.Row="0"
                       Margin="12"
+                      SelectionMode="None"
                     ItemsSource="{Binding observableSwitches}"
-                    ItemTemplate="{StaticResource SwitchesListViewTemplate}">
-            </ListView>
+                    ItemTemplate="{StaticResource SwitchesGridViewTemplate}"
+                      IsItemClickEnabled="True">
+                <Interactivity:Interaction.Behaviors>
+                    <Core:EventTriggerBehavior EventName="ItemClick">
+                        <Core:CallMethodAction MethodName="ToggleSwitch" TargetObject="{Binding Mode=OneWay}"/>
+
+                    </Core:EventTriggerBehavior>
+                </Interactivity:Interaction.Behaviors>
+            </GridView>
             <Button Content="Go!" Grid.Row="1" Margin="12"/>
             <Button Content="Load switches" Grid.Row="1" Margin="200,12,12,12">
                 <Interactivity:Interaction.Behaviors>
